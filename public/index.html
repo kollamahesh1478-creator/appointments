@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hospital Appointments Booking</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <div class="header-top">
+                <div>
+                    <h1 id="hospitalNameDisplay">OM SUPATHAM HOSPITAL</h1>
+                    <address>OPP KFC Street,BHAVANI NAGAR, Tirupati, AP 517501</address>
+                    <img src="hospital-logo.png" alt="Hospital Logo" class="hospital-logo">
+                    <button class="btn-contact" onclick="contactHospital()">Contact Us</button>
+                    <p>Book your appointment easily and quickly</p>
+                </div>
+                <div class="header-admin">
+                    <button id="adminLoginBtn" class="btn-admin-login" onclick="showLoginPage()">Admin Login</button>
+                    <button id="adminLogoutBtn" class="btn-admin-logout" onclick="adminLogout()"
+                        style="display: none;">Logout</button>
+                </div>
+            </div>
+        </header>
+
+        <nav class="navbar">
+            <button class="nav-link active" id="navBooking" onclick="showBookingPage()">Book Appointment</button>
+            <button class="nav-link" id="navDashboard" onclick="showDashboard()" style="display: none;">Admin
+                Dashboard</button>
+            <button class="nav-link" id="navSettings" onclick="showSettings()" style="display: none;">Settings</button>
+        </nav>
+
+        <!-- Login Page -->
+        <div id="loginPage" class="page" style="display: none;">
+            <main style="display: grid; grid-template-columns: 1fr; margin-bottom: 40px;">
+                <div class="form-section" style="max-width: 400px; margin: 0 auto; width: 100%;">
+                    <h2>Admin Login</h2>
+                    <form onsubmit="adminLogin(event)">
+                        <div class="form-group">
+                            <label for="adminEmail">Email</label>
+                            <input type="email" id="adminEmail" required placeholder="Enter admin email">
+                        </div>
+                        <div class="form-group">
+                            <label for="adminPassword">Password</label>
+                            <input type="password" id="adminPassword" required placeholder="Enter admin password">
+                        </div>
+                        <button type="submit" class="btn btn-primary">Login</button>
+                    </form>
+                    <div id="loginError" class="message message-error" style="display: none;">
+                        ✗ Invalid credentials
+                    </div>
+                </div>
+            </main>
+        </div>
+
+        <!-- Booking Page -->
+        <div id="bookingPage" class="page active">
+            <main>
+                <div class="form-section">
+                    <h2>Book Your Appointment</h2>
+                    <form id="appointmentForm" onsubmit="bookAppointment(event)">
+
+                        <div class="form-group">
+                            <label for="patientName">Full Name *</label>
+                            <input type="text" id="patientName" required placeholder="Enter your full name">
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="email">Email *</label>
+                                <input type="email" id="email" required placeholder="your@email.com">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="phone">Phone Number *</label>
+                                <input type="tel" id="phone" required placeholder="+1 (555) 000-0000">
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="doctor">Select Doctor *</label>
+                                <select id="doctor" required>
+                                    <option value="">-- Choose a Doctor --</option>
+                                    <option value="Dr. John Smith">Dr. John Smith (General Medicine)</option>
+                                    <option value="Dr. Sarah Johnson">Dr. Sarah Johnson (Cardiology)</option>
+                                    <option value="Dr. Mike Davis">Dr. Mike Davis (Orthopedics)</option>
+                                    <option value="Dr. Emily Wilson">Dr. Emily Wilson (Dermatology)</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="date">Preferred Date *</label>
+                                <input type="date" id="date" required>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="time">Preferred Time *</label>
+                                <select id="time" required>
+                                    <option value="">-- Select date and doctor first --</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="reason">Reason for Visit</label>
+                                <input type="text" id="reason" placeholder="e.g., Regular checkup, Consultation">
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">Book Appointment</button>
+                    </form>
+
+                    <div id="successMessage" class="message message-success" style="display: none;">
+                        ✓ Appointment booked successfully!
+                    </div>
+
+                    <div id="errorMessage" class="message message-error" style="display: none;">
+                        ✗ Error booking appointment. Please try again.
+                    </div>
+                </div>
+
+                <div class="info-section">
+                    <h3>📋 How to Book</h3>
+                    <ol>
+                        <li>Fill in your personal details</li>
+                        <li>Select your preferred doctor</li>
+                        <li>Choose a date and available time</li>
+                        <li>Submit the form</li>
+                        <li>Your appointment will be confirmed</li>
+                    </ol>
+
+                    <h3>⏰ OM SUPATHAM HOSPITAL </h3>
+                    <p> - A MULTI-SPECIALITY HOSPITAL WHICH IS LOCATED IN TIRUPATI</p>
+
+                </div>
+            </main>
+        </div>
+
+        <!-- Dashboard Page -->
+        <div id="dashboardPage" class="page" style="display: none;">
+            <main>
+                <div class="dashboard-section">
+                    <h2>Appointments Dashboard</h2>
+
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <h3>Total Appointments</h3>
+                            <div class="stat-number" id="totalAppointments">0</div>
+                        </div>
+                        <div class="stat-card success">
+                            <h3>Confirmed</h3>
+                            <div class="stat-number" id="confirmedCount">0</div>
+                        </div>
+                        <div class="stat-card danger">
+                            <h3>Cancelled</h3>
+                            <div class="stat-number" id="cancelledCount">0</div>
+                        </div>
+                        <div class="stat-card warning">
+                            <h3>Today's Appointments</h3>
+                            <div class="stat-number" id="todayCount">0</div>
+                        </div>
+                        <div class="stat-card info">
+                            <h3>New Inquiries</h3>
+                            <div class="stat-number" id="contactCount">0</div>
+                        </div>
+                    </div>
+
+                    <div class="appointments-list">
+                        <h3>All Appointments</h3>
+                        <div id="appointmentsList"></div>
+                    </div>
+                </div>
+            </main>
+        </div>
+
+        <!-- Settings Page -->
+        <div id="settingsPage" class="page" style="display: none;">
+            <main style="display: block; margin-bottom: 40px;">
+                <div class="dashboard-section">
+                    <h2>Admin Settings</h2>
+
+                    <!-- Hospital Info Tab -->
+                    <div class="settings-tabs">
+                        <button class="tab-btn active" onclick="showTab('hospital-tab')">Hospital Info</button>
+                        <button class="tab-btn" onclick="showTab('doctors-tab')">Manage Doctors</button>
+                        <button class="tab-btn" onclick="showTab('timings-tab')">Doctor Timings</button>
+                        <button class="tab-btn" onclick="showTab('admins-tab')">Manage Admins</button>
+                        <button class="tab-btn" onclick="showTab('payment-tab')">Payment Settings</button>
+                        <button class="tab-btn" onclick="showTab('requests-tab')">Appointment Requests</button>
+                        <button class="tab-btn" onclick="showTab('messages-tab')">Contact Messages <span
+                                id="messagesBadge"
+                                style="background: #ef4444; color: white; border-radius: 50%; width: 20px; height: 20px; display: inline-flex; align-items: center; justify-content: center; font-size: 0.75rem; margin-left: 5px;">0</span></button>
+                    </div>
+
+                    <!-- Hospital Info -->
+                    <div id="hospital-tab" class="tab-content active" style="display: block;">
+                        <h3>Hospital Information</h3>
+                        <form onsubmit="updateHospitalInfo(event)">
+                            <div class="form-group">
+                                <label for="hospitalName">Hospital Name</label>
+                                <input type="text" id="hospitalName" required placeholder="Hospital Name">
+                            </div>
+                            <div class="form-group">
+                                <label for="hospitalLogo">Hospital Logo</label>
+                                <input type="file" id="hospitalLogo" accept="image/*" onchange="updateLogo()">
+                                <small>Upload a logo image (JPG, PNG)</small>
+                            </div>
+                            <div id="logoPreview" style="margin: 10px 0;">
+                                <img id="logoImg" style="max-width: 150px; max-height: 150px; display: none;">
+                            </div>
+                            <div class="form-group">
+                                <label>Hospital Hours</label>
+                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                                    <div>
+                                        <label style="font-size: 0.9rem; margin-bottom: 5px;">Weekdays (Mon-Fri)</label>
+                                        <input type="time" id="weekdayStart" placeholder="Start time">
+                                        <input type="time" id="weekdayEnd" placeholder="End time"
+                                            style="margin-top: 5px;">
+                                    </div>
+                                    <div>
+                                        <label style="font-size: 0.9rem; margin-bottom: 5px;">Saturday</label>
+                                        <input type="time" id="saturdayStart" placeholder="Start time">
+                                        <input type="time" id="saturdayEnd" placeholder="End time"
+                                            style="margin-top: 5px;">
+                                    </div>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Save Hospital Info</button>
+                        </form>
+                        <div id="hospitalSuccess" class="message message-success" style="display: none;">
+                            ✓ Hospital information updated!
+                        </div>
+                    </div>
+
+                    <!-- Manage Doctors -->
+                    <div id="doctors-tab" class="tab-content" style="display: none;">
+                        <h3>Manage Doctors</h3>
+                        <form onsubmit="addDoctor(event)">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="doctorName">Doctor Name</label>
+                                    <input type="text" id="doctorName" required placeholder="e.g., Dr. John Smith">
+                                </div>
+                                <div class="form-group">
+                                    <label for="doctorSpecialty">Specialty</label>
+                                    <input type="text" id="doctorSpecialty" required placeholder="e.g., Cardiology">
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Add Doctor</button>
+                        </form>
+
+                        <h4 style="margin-top: 30px; color: var(--primary-color);">Current Doctors</h4>
+                        <div id="doctorsList"></div>
+                        <div id="noDoctorsMsg" class="empty-message">No doctors added yet</div>
+                    </div>
+
+                    <!-- Doctor Timings -->
+                    <div id="timings-tab" class="tab-content" style="display: none;">
+                        <h3>Doctor Timings & Slots</h3>
+                        <form onsubmit="updateDoctorTimings(event)">
+                            <div class="form-group">
+                                <label for="timingDoctor">Select Doctor</label>
+                                <select id="timingDoctor" required onchange="loadDoctorTimingDetails()">
+                                    <option value="">-- Choose a Doctor --</option>
+                                </select>
+                            </div>
+
+                            <div id="timingDetails" style="display: none;">
+                                <div class="form-group">
+                                    <label for="startTime">Start Time</label>
+                                    <input type="time" id="startTime" value="00:00">
+                                </div>
+                                <div class="form-group">
+                                    <label for="endTime">End Time</label>
+                                    <input type="time" id="endTime" value="23:59">
+                                </div>
+                                <div class="form-group">
+                                    <label for="slotDuration">Slot Duration (minutes)</label>
+                                    <input type="number" id="slotDuration" min="15" max="120" value="30">
+                                </div>
+                                <button type="submit" class="btn btn-primary">Save Timings</button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Manage Admins Tab -->
+                    <div id="admins-tab" class="tab-content" style="display: none;">
+                        <h3>Manage Admin Users</h3>
+                        <div id="addAdminContainer">
+                            <form onsubmit="addAdmin(event)">
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="adminNewEmail">Email</label>
+                                        <input type="email" id="adminNewEmail" required
+                                            placeholder="admin@hospital.com">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="adminNewPassword">Password</label>
+                                        <input type="password" id="adminNewPassword" required
+                                            placeholder="Enter password">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="adminRole">Admin Role</label>
+                                    <select id="adminRole" required>
+                                        <option value="super_admin">Super Admin (Full Access)</option>
+                                        <option value="admin">Admin (Standard Access)</option>
+                                        <option value="manager">Manager (Limited Access)</option>
+                                    </select>
+                                </div>
+                                <h4 style="margin-top: 20px;">Permissions</h4>
+                                <div class="permissions-grid">
+                                    <label class="permission-checkbox">
+                                        <input type="checkbox" id="perm_hospital_info" checked> Edit Hospital Info
+                                    </label>
+                                    <label class="permission-checkbox">
+                                        <input type="checkbox" id="perm_doctors" checked> Manage Doctors
+                                    </label>
+                                    <label class="permission-checkbox">
+                                        <input type="checkbox" id="perm_timings" checked> Manage Timings
+                                    </label>
+                                    <label class="permission-checkbox">
+                                        <input type="checkbox" id="perm_payments" checked> Manage Payments
+                                    </label>
+                                    <label class="permission-checkbox">
+                                        <input type="checkbox" id="perm_requests" checked> Approve Requests
+                                    </label>
+                                    <label class="permission-checkbox">
+                                        <input type="checkbox" id="perm_admins" checked> Manage Admins
+                                    </label>
+                                </div>
+                                <button type="submit" class="btn btn-primary" style="margin-top: 20px;">Add
+                                    Admin</button>
+                            </form>
+                        </div>
+
+                        <h4 style="margin-top: 30px; color: var(--primary-color);">Current Admins</h4>
+                        <div id="adminsList"></div>
+                        <div id="adminAddSuccess" class="message message-success" style="display: none;">
+                            ✓ Admin user created successfully!
+                        </div>
+                    </div>
+
+                    <!-- Payment Settings Tab -->
+                    <div id="payment-tab" class="tab-content" style="display: none;">
+                        <h3>Payment Settings</h3>
+                        <form onsubmit="updatePaymentSettings(event)">
+                            <div class="form-group">
+                                <label for="appointmentFee">Appointment Consultation Fee (₹)</label>
+                                <input type="number" id="appointmentFee" required min="0"
+                                    placeholder="Enter fee amount">
+                            </div>
+                            <div class="form-group">
+                                <label for="paymentDescription">Payment Description</label>
+                                <textarea id="paymentDescription" placeholder="e.g., Consultation fee for appointment"
+                                    style="width: 100%; padding: 10px; border: 2px solid var(--border-color); border-radius: 6px;"></textarea>
+                            </div>
+                            <h4>Payment Methods</h4>
+                            <div class="checkbox-group">
+                                <label>
+                                    <input type="checkbox" id="enableQR" checked> Enable QR Code / Scanner
+                                </label>
+                                <label>
+                                    <input type="checkbox" id="enablePaymentLink" checked> Enable Payment Link
+                                </label>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Save Payment Settings</button>
+                        </form>
+                        <div id="paymentSuccess" class="message message-success" style="display: none;">
+                            ✓ Payment settings updated!
+                        </div>
+                    </div>
+
+                    <!-- Appointment Requests Tab -->
+                    <div id="requests-tab" class="tab-content" style="display: none;">
+                        <h3>Appointment Requests (Pending)</h3>
+                        <div id="requestsList"></div>
+                    </div>
+
+                    <!-- Contact Messages Tab -->
+                    <div id="messages-tab" class="tab-content" style="display: none;">
+                        <h3>Contact Messages</h3>
+                        <div style="margin-bottom: 20px;">
+                            <button class="btn btn-primary" onclick="clearAllMessages()"
+                                style="background: #ef4444;">Clear All Messages</button>
+                            <button class="btn btn-primary" onclick="markAllAsRead()" style="margin-left: 10px;">Mark
+                                All as Read</button>
+                        </div>
+                        <div id="messagesList"></div>
+                    </div>
+                </div>
+            </main>
+        </div>
+
+        <footer>
+            <p>&copy; 2026 Hospital Appointments System. All rights reserved.</p>
+            <p id="currentUserDisplay" style="margin-top: 10px; font-size: 0.9rem; color: #666;"></p>
+            <p id="currentRoleDisplay" style="margin-top: 5px; font-size: 0.9rem; color: #666;"></p>
+        </footer>
+    </div>
+
+    <!-- Payment Modal -->
+    <div id="paymentModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <span class="close" onclick="closePaymentModal()">&times;</span>
+            <h2>Payment Required</h2>
+            <div id="paymentDetails"></div>
+            <div id="paymentMethodsDiv" style="margin: 20px 0;">
+                <h4>Choose Payment Method:</h4>
+                <button class="btn btn-primary" id="qrBtn" onclick="showQRCode()"
+                    style="width: 100%; margin-bottom: 10px;">QR Code / Scanner</button>
+                <button class="btn btn-primary" id="linkBtn" onclick="generatePaymentLink()" style="width: 100%;">Get
+                    Payment Link</button>
+            </div>
+            <div id="qrSection" style="display: none; text-align: center;">
+                <h4>Scan QR Code for Payment</h4>
+                <div id="qrCodeContainer"></div>
+                <p style="margin-top: 20px; font-size: 0.9rem; color: #666;">Use any UPI app to scan this QR code and
+                    complete payment</p>
+            </div>
+            <div id="linkSection" style="display: none;">
+                <h4>Payment Link</h4>
+                <p>Share this link with the patient to complete payment:</p>
+                <div style="background: #f5f5f5; padding: 15px; border-radius: 6px; word-break: break-all;">
+                    <code id="paymentLinkCode"></code>
+                </div>
+                <button class="btn btn-primary" onclick="copyPaymentLink()" style="width: 100%; margin-top: 10px;">Copy
+                    Link</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+
+    <!-- Contact Us Modal -->
+    <div id="contactModal" class="modal" style="display: none;">
+        <div class="modal-content" style="max-width: 500px;">
+            <span class="close" onclick="closeContactModal()">&times;</span>
+            <h2>Contact Us</h2>
+            <div
+                style="background: #f0f9ff; padding: 15px; border-radius: 8px; margin-bottom: 20px; border-left: 4px solid #2563eb;">
+                <h4 id="hospitalContactName">OM SUPATHAM HOSPITAL</h4>
+                <p id="hospitalContactAddress" style="margin: 5px 0;"><strong>Address:</strong> OPP KFC Street, BHAVANI
+                    NAGAR, Tirupati, AP 517501</p>
+                <p id="hospitalContactPhone" style="margin: 5px 0;"><strong>Phone:</strong> <span
+                        id="hospitalPhone">+91-XXXX-XXXX-XX</span></p>
+                <p id="hospitalContactHours" style="margin: 5px 0;"><strong>Hours:</strong> <span
+                        id="hospitalHours">Mon-Sat: 9:00 AM - 5:00 PM</span></p>
+            </div>
+            <form onsubmit="submitContact(event)">
+                <div class="form-group">
+                    <label for="contactName">Your Name *</label>
+                    <input type="text" id="contactName" required placeholder="Enter your name">
+                </div>
+                <div class="form-group">
+                    <label for="contactEmail">Email *</label>
+                    <input type="email" id="contactEmail" required placeholder="Enter your email">
+                </div>
+                <div class="form-group">
+                    <label for="contactPhone">Phone *</label>
+                    <input type="tel" id="contactPhone" required placeholder="Enter your phone number">
+                </div>
+                <div class="form-group">
+                    <label for="contactSubject">Subject *</label>
+                    <input type="text" id="contactSubject" required placeholder="What is this regarding?">
+                </div>
+                <div class="form-group">
+                    <label for="contactMessage">Message *</label>
+                    <textarea id="contactMessage" required placeholder="Type your message here..."
+                        style="width: 100%; height: 120px; padding: 10px; border: 2px solid var(--border-color); border-radius: 6px; font-family: inherit;"></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%;">Send Message</button>
+            </form>
+            <div id="contactSuccess" class="message message-success" style="display: none; margin-top: 15px;">
+                ✓ Message sent successfully! We will contact you soon.
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
